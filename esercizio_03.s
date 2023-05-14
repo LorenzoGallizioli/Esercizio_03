@@ -1,4 +1,4 @@
-.data        0x0
+.data        0x1000
 
 INOUT:      .half 0x0000    ##halfword
 
@@ -13,6 +13,9 @@ ASCII:      .byte 0x41, 0x42, 0x43, 0x44
             .byte 0x5D, 0x5E, 0x5F, 0x60
 
 .text
+MAIN:       lui $s0, 0x1000
 
-MAIN:
-    
+
+START:      lh $s1, INOUT           ## Loads halfword
+            and $s3, $s1, $s0       ## Checks linea 12
+            beq $s3, $zero, START   ## IF linea 12 = 0 ripeti ciclo
