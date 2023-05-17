@@ -1,4 +1,4 @@
-.data        0x1000
+.data        0x10005000     ##indirizzo di partenza della cella dei dati
 
 INOUT:      .half 0x0000    ##halfword, per settare il valore devo fare (set value of), indirizzo della word(in vui è contenuta la halfword), successivamente aggiungere l'intero valore della nuova word
 
@@ -13,11 +13,11 @@ ASCII:      .byte 0x41, 0x42, 0x43, 0x44
             .byte 0x5D, 0x5E, 0x5F, 0x60
 
 .text
-MAIN:       lui $s0, 0x1000
+MAIN:       addi $s0, 4096                ##la lui trasla il valore da inserire di 4 bit in avanti,la addi funziona bene per settare un determinato bit
 
 
-START:      lh $s1, INOUT           ## Loads halfword
-            andi $s3, $s1, 4097     ## Checks linea 12, andi usa i valori in decimale e non in binario
+START:      lh $s1, INOUT                 ## Loads halfword
+            andi $s3, $s1, 0x00001000     ## Checks linea 12, uso i valori in binario per controllare un singolo bit, 0x per assegnare tutti i bit della word contenente INOUT a 0 tranne quello che voglio controllare
             beq $s3, $zero, START   ## IF linea 12 = 0 ripeti ciclo
 
             # Se la linea 12 è al livello logico basso devo capire
