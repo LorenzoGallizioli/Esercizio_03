@@ -19,3 +19,10 @@ MAIN:       lui $s0, 0x1000
 START:      lh $s1, INOUT           ## Loads halfword
             and $s3, $s1, $s0       ## Checks linea 12
             beq $s3, $zero, START   ## IF linea 12 = 0 ripeti ciclo
+
+            # Se la linea 12 è al livello logico basso devo capire
+            # come prelevare dalla linea 3 il bit che ci dirà 
+            # la velocità di trasmissione e quindi il tempo per il quale
+            # il livello logico basso deve essere mantenuto.
+
+            # Trasmissione dei bit del carattere ASCII
