@@ -30,7 +30,7 @@ ASCII:      .byte 0xc5, 0x42                      # 0x42, 0x43, 0x44.byte 0x45, 
 STACK_RA:   .word 0x00000000
 
 .text
-
+            la $s6 , STACK_RA
 
 
 READ_12:    lh $s1, INOUT                   # Loads halfword
@@ -45,7 +45,7 @@ READ_ASCII: la $s7 , ASCII                  # read address of ascii
             lb $t6, 0($s7)                  # prendo il carattere asci
             addi $s7, 1                     # incremento di 1 la posizione dell'indirizzo ascii
             addi $t5, 0x80
-            addi $t3, 9                     # inizializzo contatore a 9 perche lo decremento 8                  
+            addi $t3, 8                     # inizializzo contatore a 9 perche lo decremento 8                  
 
 
 READ_BIT:   and $t2, $t6 , $t5              # se $t2 !=0 significa che bisogna fare set 
@@ -62,10 +62,8 @@ CHECK_BIT:  bne $t2 , $zero , GO     # se $s3 == 0 salta a LOOP_104 altrimenti v
 GO:         addi $t3, -1
             bne $t3 , $zero , READ_BIT
 
-
-MAIN:      addi $v1, 1
-
-
+END:        addi $v1, 1
+            j END
 
 SET_LINE_12:    la $t1 , INOUT                   # $t1 contiene l'indirizzo di INOUT
                 ori $s3, $s1, 0x1000             # 00000000 00000000   0001 0000 0000 0000 nomero 0xEFFF mette a 1 il bit 12
@@ -95,9 +93,11 @@ LOOP_104_1: addi $t0, -1
             jr $ra  
             
 
-CHECK_LOOP: lw 
+CHECK_LOOP: sw $ra , 0($s6)
             beq $s3 , $zero , CHECK_1         # se $s3 != 0 salta a CHECK 
             jal LOOP_52                       # salto linkato a loop_52
-CHECK_1:    bne $s3 , $zero , END             # se $s3 == 0 salta a LOOP_104 altrimenti viene saltato
-            jal LOOP_104    
-END:        jr $ra            
+CHECK_1:    bne $s3 , $zero , OUT             # se $s3 == 0 salta a LOOP_104 altrimenti viene saltato
+            jal LOOP_104 
+
+OUT:        lw $ra , 0($s6)
+            jr $ra            
