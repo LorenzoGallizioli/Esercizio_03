@@ -34,14 +34,17 @@ ASCII:      .byte 0xc5, 0x42, 0x43, 0x44                # 32 Caratteri ASCII in 
 
 STACK_RA:   .word 0x00000000                            # Inizializzo la word a 0.
 
-.text
+.text   
                         la $s6 , STACK_RA               # Carico l'indirizzo della word STACK_RA in s6.
                         addi $a3, 32                    # Contatore dei byte.
+                        la $s7 , ASCII                  # Carica l'indirizzo della label ASCII.
+                        la $t1 , INOUT                  # Carico l'indirizzo di INOUT in $t1.
             
 READ_12:                lh $s1, INOUT                   # Carica l'indirizzo della halfword INOUT in s1.
                         andi $s2, $s1, 0x1000           # Controllo il livello della linea 12.
                         bne $s2, $zero, READ_12         # Se linea 12 != 0 ripeti ciclo.                                    
-                                                       
+
+
 READ_3:                 andi $a2, $s1, 0x0008           # Controllo bit linea 3, se bit acceso ritorna valore 8 (2^3).
                         jal CHECK_LOOP                  # Salta all'etichetta CHECK_LOOP salvando in $ra l'indirizzo di questa istruzione + 4.
             
@@ -49,8 +52,7 @@ READ_2:                 andi $s4, $s1, 0x0004           # Controllo bit linea 2,
 READ_14:                andi $s5, $s1, 0x4000           # Controllo bit linea 14.
 READ_15:                andi $a0, $s1, 0x8000           # Controllo bit linea 15.
             
-READ_ASCII:             la $s7 , ASCII                  # Carica l'indirizzo della label ASCII.
-                        lb $t5, 0($s7)                  # Carico un byte (carattere ASCII).
+READ_ASCII:             lb $t5, 0($s7)                  # Carico un byte (carattere ASCII).
                         addi $s7, 1                     # Incremento di 1 per spostarmi all'indirizzo del byte successivo.
                         addi $t4, 0x80                  # Aggiungo una maschera che controllerà lo stato dei bit dal + al - significativo.
                         addi $t3, 8                     # Inizializzo contatore dei bit per leggere un carattere ASCII.
@@ -103,13 +105,11 @@ END_READ:               addi $a3, -1                    # Decremento il contator
                         addi $v1, 1                     # Debug,verifica che il programma abbia verificato tutti i 32 byte
 END:                    j END                           # Loop infinito per terminare il programma.
 
-SET_LINE_12:            la $t1 , INOUT                  # Carico l'indirizzo di INOUT in $t1.
-                        ori $s3, $s1, 0x1000            # Setto a 1 il bit 12.                                                                   # 00000000 00000000   0001 0000 0000 0000 nomero 0x10000 mette a 1 il bit 12
+SET_LINE_12:            ori $s3, $s1, 0x1000            # Setto a 1 il bit 12.                                                                   # 00000000 00000000   0001 0000 0000 0000 nomero 0x10000 mette a 1 il bit 12
                         sh $s3 , 0($t1)                 # Salvo in INOUT la halfword con il bit 12 a 1.                                          # 00000000 00000000   0111 0001 0000 0000 es INOUT
                         jr $ra                          # Torno alla funzione chiamante.
 
-RESET_LINE_12:          la $t1 , INOUT                  # Carico l'indirizzo di INOUT in $t1.
-                        andi $s3, $s1, 0xEFFF           # Setto a 0 il bit 12.                                                                   # 00000000 00000000   1110 1111 1111 1111 nomero 0xEFFF mette a zero il bit 12
+RESET_LINE_12:          andi $s3, $s1, 0xEFFF           # Setto a 0 il bit 12.                                                                   # 00000000 00000000   1110 1111 1111 1111 nomero 0xEFFF mette a zero il bit 12
                         sh $s3 , 0($t1)                 # Salvo in INOUT la halfword con il bit 12 a 0.                                          # 00000000 00000000   0111 0001 0000 0000 es INOUT
                         jr $ra                          # Torno alla funzione chiamante.
 
