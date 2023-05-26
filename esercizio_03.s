@@ -100,8 +100,8 @@ CONTROL1:               bne $a2, $zero, END_READ        # Se ho eseguito CONTROL
 END_READ:               addi $a3, -1                    # Decremento il contatore dei caratteri ASCII.
                         bne $a3, $zero, READ_3          # Se il contatore != 0 significa che devo ancora finire di leggere.
 
-END:                    addi $v1, 1                     # Loop infinito per terminare il programma.
-                        j END
+                        addi $v1, 1                     # Debug,verifica che il programma abbia verificato tutti i 32 byte
+END:                    j END                           # Loop infinito per terminare il programma.
 
 SET_LINE_12:            la $t1 , INOUT                  # Carico l'indirizzo di INOUT in $t1.
                         ori $s3, $s1, 0x1000            # Setto a 1 il bit 12.                                                                   # 00000000 00000000   0001 0000 0000 0000 nomero 0x10000 mette a 1 il bit 12
