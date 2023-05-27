@@ -93,10 +93,10 @@ EVEN:                   bne $t7, $zero, BIT_STOP        # Se ho settato la linea
                         jal CHECK_LOOP                  # Loop di attesa in base alla linea 3.
 
 BIT_STOP:               beq $a2, $zero, CONTROL1        # Controllo la linea 3, se a 0 salto CONTROL_2 e faccio CONTROL_1.
-                        jal RESET_LINE_12               # Setto a 0 il bit di stop.
+                        jal SET_LINE_12                 # Setto a 1 il bit di stop.
                         jal CONTROL_2                   # Salto alla funzione che decide quanti LOOP_52 fare.
 CONTROL1:               bne $a2, $zero, END_READ        # Se ho eseguito CONTROL_2 salto a END_READ.
-                        jal RESET_LINE_12               # Setto a 0 il bit di stop.
+                        jal SET_LINE_12                 # Setto a 1 il bit di stop.
                         jal CONTROL_1                   # Salto alla funzione che decide quanti LOOP_104 fare.
 
 END_READ:               addi $a3, -1                    # Decremento il contatore dei caratteri ASCII.
